@@ -1,0 +1,33 @@
+CREATE TABLE Klienci(
+	id_klienta SERIAL PRIMARY KEY,
+	imie VARCHAR(50) NOT NULL,
+	nazwisko VARCHAR(50) NOT NULL,
+	email VARCHAR(50) NOT NULL,
+	data_urodzenia DATE NULL,
+	plec VARCHAR(20) NULL,
+	wzrost INT NULL,
+	waga INT NULL,
+	rozmiar_buta FLOAT NULL,
+	numer_documentu VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE Sprzet(
+	id_sprzetu SERIAL PRIMARY KEY,
+	nazwa VARCHAR(30) NOT NULL,
+	model VARCHAR(20) NOT NULL,
+	firma VARCHAR(20) NOT NULL,
+	rozmiar FLOAT NOT NULL,
+	data_zakupu DATE NOT NULL,
+	cena_zakupu FLOAT NOT NULL,
+	cena_dzienna FLOAT NOT NULL
+
+);
+
+CREATE TABLE Wypozyczenie (
+    id_klienta BIGINT UNSIGNED NOT NULL,
+    id_sprzetu BIGINT UNSIGNED NOT NULL,
+    data_operacji DATE NOT NULL,
+    typ INT NOT NULL,
+    FOREIGN KEY (id_klienta) REFERENCES Klienci(id_klienta),
+    FOREIGN KEY (id_sprzetu) REFERENCES Sprzet(id_sprzetu)
+);
