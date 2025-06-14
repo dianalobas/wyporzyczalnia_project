@@ -7,10 +7,11 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame{
     private JPanel JPanel1;
-    private JButton createBtn;
+    private JButton returnBtn;
     private JButton rentItemBtn;
     private JButton storeManageBtn;
     private JButton outProgramBtn;
+    private JButton CRUDklienci;
 
     public Menu(){
         super("Menu");
@@ -19,11 +20,13 @@ public class Menu extends JFrame{
         int width = 500, height = 300;
         this.setSize(width,height);
 
-        createBtn.setPreferredSize(new Dimension(180, 20));
+        returnBtn.setPreferredSize(new Dimension(180, 20));
         rentItemBtn.setPreferredSize(new Dimension(180, 20));
         storeManageBtn.setPreferredSize(new Dimension(180, 20));
         outProgramBtn.setPreferredSize(new Dimension(180, 20));
-        createBtn.addActionListener(new ActionListener() {
+        CRUDklienci.setPreferredSize(new Dimension(180, 20));
+
+        returnBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -43,6 +46,14 @@ public class Menu extends JFrame{
                 dispose();
                 SearchUserTable searchUserTable = new SearchUserTable();
                 searchUserTable.setVisible(true);
+            }
+        });
+        CRUDklienci.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                ListaWszystkichKlientow listaWszystkichKlientow = new ListaWszystkichKlientow();
+                listaWszystkichKlientow.setVisible(true);
             }
         });
     }

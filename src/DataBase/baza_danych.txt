@@ -11,23 +11,155 @@ CREATE TABLE Klienci(
 	numer_documentu VARCHAR(30) NOT NULL
 );
 
+CREATE TABLE SprzetType(
+    id_sprzet_typa SERIAL PRIMARY KEY,
+    nazwa VARCHAR(20) NOT NULL
+);
+
 CREATE TABLE Sprzet(
 	id_sprzetu SERIAL PRIMARY KEY,
-	nazwa VARCHAR(30) NOT NULL,
+	type_id INT NOT NULL,
+	nie_dostepne BOOL NOT NULL DEFAULT 0, -----#
 	model VARCHAR(20) NOT NULL,
 	firma VARCHAR(20) NOT NULL,
 	rozmiar FLOAT NOT NULL,
 	data_zakupu DATE NOT NULL,
 	cena_zakupu FLOAT NOT NULL,
-	cena_dzienna FLOAT NOT NULL
+	cena_dzienna FLOAT NOT NULL,
+	FOREIGN KEY (type_id) REFERENCES SprzetType(id_sprzet_typa)
 
 );
 
 CREATE TABLE Wypozyczenie (
     id_klienta BIGINT UNSIGNED NOT NULL,
     id_sprzetu BIGINT UNSIGNED NOT NULL,
-    data_operacji DATE NOT NULL,
+    data_operacji DATETIME NOT NULL,
     typ INT NOT NULL,
     FOREIGN KEY (id_klienta) REFERENCES Klienci(id_klienta),
     FOREIGN KEY (id_sprzetu) REFERENCES Sprzet(id_sprzetu)
 );
+
+INSERT INTO `sprzettype`(`nazwa`) VALUES
+('Narty'), ('Snowboard'), ('Kijki'), ('Kask');
+
+INSERT INTO `sprzet`(`type_id`, `model`, `firma`, `rozmiar`, `data_zakupu`, `cena_zakupu`, `cena_dzienna`) VALUES
+(1,'x4','head', 120,'2020-12-03',1500, 50),
+(1,'n2','atomic', 130,'2023-11-03',1100, 40),
+(2,'m8','rostignol', 55,'2021-12-02',1400, 50),
+(3,'mf','head', 12,'2020-12-03',150, 15);
+
+SELECT * FROM sprzet WHERE type_id = 1 AND nie_dostepne = 0;
+
+SELECT * FROM sprzet
+JOIN sprzettype ON sprzet.type_id = sprzettype.id_sprzet_typa
+WHERE type_id = 1 AND nie_dostepne = 0;
+
+INSERT INTO `wypozyczenie`(`id_klienta`, `id_sprzetu`, `typ`) VALUES
+(124, 5, 0);
+
+INSERT INTO `wypozyczenie`(`id_klienta`, `id_sprzetu`, `typ`) VALUES
+(125, 4, 0),
+(124, 6, 0),
+(127, 6, 0);
+
+SELECT * FROM wypozyczenie w
+JOIN sprzet s ON w.id_sprzetu = s.id_sprzetu
+WHERE id_klienta = 124;
+
+SELECT * FROM `wypozyczenie`
+WHERE id_sprzetu = 6 ORDER BY (data_operacji) DESC;
+
+SELECT * FROM `wypozyczenie`
+WHERE id_sprzetu = 3 ORDER BY (data_operacji) DESC
+LIMIT 1;
+
+
+
+SELECT * FROM sprzet s
+LEFT JOIN (SELECT * FROM `wypozyczenie` ORDER BY (data_operacji) DESC LIMIT 1) as subw ON s.id_sprzetu = subw.id_sprzetu;
+
+
+SELECT w.*
+FROM wypozyczenie w
+JOIN (
+    SELECT id_sprzetu, MAX(data_operacji) AS max_data
+    FROM wypozyczenie
+    GROUP BY id_sprzetu
+) AS latest
+ON w.id_sprzetu = latest.id_sprzetu AND w.data_operacji = latest.max_data;
+
+
+SELECT * FROM `sprzet` AS sp
+LEFT JOIN
+(SELECT w.*
+FROM wypozyczenie w
+JOIN (
+    SELECT id_sprzetu, MAX(data_operacji) AS max_data
+    FROM wypozyczenie
+    GROUP BY id_sprzetu
+) AS latest
+ON w.id_sprzetu = latest.id_sprzetu AND w.data_operacji = latest.max_data) AS wp ON sp.id_sprzetu = wp.id_sprzetu;
+
+
+
+// возвращает оборудование доступное для вынайма
+SELECT * FROM `sprzet` AS sp
+LEFT JOIN
+(SELECT w.*
+FROM wypozyczenie w
+JOIN (
+    SELECT id_sprzetu, MAX(data_operacji) AS max_data
+    FROM wypozyczenie
+    GROUP BY id_sprzetu
+) AS latest
+ON w.id_sprzetu = latest.id_sprzetu AND w.data_operacji = latest.max_data) AS wp ON sp.id_sprzetu = wp.id_sprzetu
+WHERE wp.typ IS NULL OR wp.typ = 1;
+
+// -||- в прокате
+SELECT * FROM `sprzet` AS sp
+LEFT JOIN
+(SELECT w.*
+FROM wypozyczenie w
+JOIN (
+    SELECT id_sprzetu, MAX(data_operacji) AS max_data
+    FROM wypozyczenie
+    GROUP BY id_sprzetu
+) AS latest
+ON w.id_sprzetu = latest.id_sprzetu AND w.data_operacji = latest.max_data) AS wp ON sp.id_sprzetu = wp.id_sprzetu
+WHERE wp.typ = 0;
+
+SELECT DISTINCT st.nazwa AS typ_sprzetu
+FROM SprzetType st
+JOIN Sprzet s ON s.type_id = st.id_sprzet_typa;
+
+
+///////// Dane do testowania /////////////
+-- Dodanie typów sprzętu
+INSERT INTO SprzetType (nazwa) VALUES
+('Narty'),
+('Snowboard'),
+('Kask'),
+('Buty');
+
+-- Dodanie przykładowych klientów
+INSERT INTO Klienci (imie, nazwisko, email, data_urodzenia, plec, wzrost, waga, rozmiar_buta, numer_documentu) VALUES
+('Jan', 'Kowalski', 'jan.kowalski@example.com', '1990-05-12', 'Mężczyzna', 180, 78, 43.0, 'ABC123456'),
+('Anna', 'Nowak', 'anna.nowak@example.com', '1995-08-23', 'Kobieta', 165, 58, 38.5, 'XYZ987654'),
+('Piotr', 'Wiśniewski', 'piotr.wisniewski@example.com', '1988-03-10', 'Mężczyzna', 175, 80, 42.0, 'QWE123456'),
+('Katarzyna', 'Zielińska', 'katarzyna.zielinska@example.com', '1992-11-30', 'Kobieta', 170, 62, 39.0, 'JKL654321');
+
+-- Dodanie przykładowego sprzętu
+INSERT INTO Sprzet (type_id, model, firma, rozmiar, data_zakupu, cena_zakupu, cena_dzienna) VALUES
+(1, 'Racetiger', 'Volkl', 170.0, '2022-11-01', 1200.00, 60.00),
+(1, 'Hero Elite', 'Rossignol', 165.0, '2023-01-15', 1400.00, 70.00),
+(2, 'Freestyle X', 'Burton', 155.0, '2022-12-10', 1100.00, 65.00),
+(3, 'Pocito Skull', 'POC', 58.0, '2023-02-05', 300.00, 20.00),
+(4, 'Hawx Prime', 'Atomic', 42.0, '2023-03-20', 800.00, 40.00);
+
+-- Dodanie przykładowych wypożyczeń (1 = wypożyczenie, 0 = zwrot)
+INSERT INTO Wypozyczenie (id_klienta, id_sprzetu, typ) VALUES
+(1, 1, 1),
+(1, 1, 0),
+(2, 3, 1),
+(3, 2, 1),
+(4, 4, 1);

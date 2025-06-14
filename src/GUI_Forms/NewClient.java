@@ -32,6 +32,16 @@ public class NewClient extends JFrame{
 
         menuBackBtn.setPreferredSize(new Dimension(180, 20));
         saveBtn.setPreferredSize(new Dimension(180, 20));
+
+        nameInp.setPreferredSize(new Dimension(100, 20));
+        surnameInp.setPreferredSize(new Dimension(100, 20));
+
+        heightInp.setPreferredSize(new Dimension(40, 20));
+        weightInp.setPreferredSize(new Dimension(40, 20));
+        bootSizeInp.setPreferredSize(new Dimension(40, 20));
+
+
+
         menuBackBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -43,31 +53,39 @@ public class NewClient extends JFrame{
         saveBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Klient klient = new Klient();
-                klient.imie = nameInp.getText();
-                klient.nazwisko = surnameInp.getText();
-                klient.email = emailInp.getText();
-                klient.telefon = telefonInp.getText();
-                klient.numer_documentu = passportInp.getText();
+                if (!nameInp.getText().isEmpty() && !surnameInp.getText().isEmpty() && !emailInp.getText().isEmpty() &&
+                        !telefonInp.getText().isEmpty() && !passportInp.getText().isEmpty()){
+                    Klient klient = new Klient();
+                    klient.imie = nameInp.getText();
+                    klient.nazwisko = surnameInp.getText();
+                    klient.email = emailInp.getText();
+                    klient.telefon = telefonInp.getText();
+                    klient.numer_documentu = passportInp.getText();
 
-                KlienciRepository klienciRepository = new KlienciRepository();
-                try {
-                    klienciRepository.dodac(klient);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null,"123");
+                    KlienciRepository klienciRepository = new KlienciRepository();
+                    try {
+                        klienciRepository.dodac(klient);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null,"123"); //////
+
+                    }
+
+                    nameInp.setText("");
+                    surnameInp.setText("");
+                    emailInp.setText("");
+                    telefonInp.setText("");
+                    passportInp.setText("");
+                    heightInp.setText("");
+                    weightInp.setText("");
+                    bootSizeInp.setSelectedIndex(0);
+                    adresInp.setText("");
+                    sexInp.setSelectedIndex(0);
+                } else {
+                    JOptionPane.showMessageDialog(null,"Uzupełnij wszystkie pola z gwiazdkami!","Błąd",
+                            JOptionPane.WARNING_MESSAGE);
 
                 }
 
-                nameInp.setText("");
-                surnameInp.setText("");
-                emailInp.setText("");
-                telefonInp.setText("");
-                passportInp.setText("");
-                heightInp.setText("");
-                weightInp.setText("");
-                bootSizeInp.setSelectedIndex(0);
-                adresInp.setText("");
-                sexInp.setSelectedIndex(0);
             }
         });
     }

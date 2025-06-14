@@ -1,7 +1,7 @@
 package GUI_Forms;
 
-import DataBase.KlienciRepository;
 import Class.*;
+import DataBase.KlienciRepository;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,19 +10,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SearchUserTable extends JFrame{
+public class ListaWszystkichKlientow extends JFrame{
     private JPanel JPanel1;
-    private JButton menuBackBtn;
-    private JButton nextBtn;
-    private JTable userTable;
     private JTextField telefonInp;
     private JButton searchBtn;
+    private JTable userTable;
+    private JButton menuBackBtn;
+    private JButton editBtn;
     private JLabel messageLabel;
-    private JButton backItemBtn;
+    private JButton addBtn;
+    private JButton delBtn;
 
     private DefaultTableModel tableModel;
+    private JPopupMenu popupMenu;
+    private JMenuItem menuItemAdd;
+    private JMenuItem menuItemRemove;
+    private JMenuItem menuItemRemoveAll;
 
-    public SearchUserTable(){
+    public ListaWszystkichKlientow(){
         super("Wypożyczenie 1");
         this.setContentPane(this.JPanel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,7 +60,7 @@ public class SearchUserTable extends JFrame{
         ///
         AtomicReference<Klient> klientRef = new AtomicReference<>(null);
 
-        nextBtn.addActionListener(new ActionListener() {
+        editBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!userTable.getSelectionModel().isSelectionEmpty()){
@@ -64,7 +69,7 @@ public class SearchUserTable extends JFrame{
 
                     ///
                     Klient klient = klientRef.get();
-                    RentItem rentItem = null; //////!
+                    RentItem rentItem = null;//////////!
                     try {
                         rentItem = new RentItem(klient);
                     } catch (Exception ex) {
@@ -114,17 +119,48 @@ public class SearchUserTable extends JFrame{
         });
 
 
-        backItemBtn.addActionListener(new ActionListener() {
+        addBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!userTable.getSelectionModel().isSelectionEmpty()){
-                    dispose();
-                    telefonInp.setText("");
-
-                    ///
-                    Klient klient = klientRef.get();
-                    RentItemsList rentItemsList = new RentItemsList(klient);
-                    rentItemsList.setVisible(true);
+                dispose();
+                NewClient newClient = new NewClient();
+                newClient.setVisible(true);
+            }
+        });
+        delBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String numerTelefonu = telefonInp.getText();
+                if (!numerTelefonu.trim().isEmpty()){
+                    if (!userTable.getSelectionModel().isSelectionEmpty()){
+                        try {
+                            klienciRepository.usunacKlienta(numerTelefonu);
+                            tableModel = new DefaultTableModel(emptyData, columnNames);
+                            userTable.setModel(tableModel);
+                            messageLabel.setForeground(Color.BLACK);
+                            messageLabel.setText("Klient o numerze telefonu: " + numerTelefonu + " został usunięty");
+                            telefonInp.setText("");
+                        } catch (Exception ex) {
+                            messageLabel.setText("Nie ma klienta z takiem numerem telefonu");
+                        }
+                    }
+                }
+            }
+        });
+        editBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String numerTelefonu = telefonInp.getText();
+                if (!numerTelefonu.trim().isEmpty()){
+                    if (!userTable.getSelectionModel().isSelectionEmpty()){
+                        try {
+                            klienciRepository.edytowanieKlienta(numerTelefonu);
+                            messageLabel.setForeground(Color.BLACK);
+                            messageLabel.setText("Klient o numerze telefonu: " + numerTelefonu + " został zedytowany");
+                        } catch (Exception ex) {
+                            messageLabel.setText("Nie ma klienta z takiem numerem telefonu");
+                        }
+                    }
                 }
             }
         });

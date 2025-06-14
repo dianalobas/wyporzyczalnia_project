@@ -40,6 +40,7 @@ public class KlienciRepository {
     public int dodac(Klient klient) throws Exception {
         return dodac(klient.imie, klient.nazwisko, klient.email, klient.telefon, (java.sql.Date)klient.data_urodzenia, klient.plec, klient.wzrost, klient.waga, klient.rozmiar_buta, klient.numer_documentu);
     }
+
     public ArrayList<Klient> otrzymacWszyskrich() throws Exception {
         ArrayList<Klient> result = new ArrayList<>();
         String sql = "SELECT `id_klienta`, `imie`, `nazwisko`, `email`, `telefon`," +
@@ -71,7 +72,7 @@ public class KlienciRepository {
         }
         return result;
     }
-    public Klient otrzymacKlienta(String telefon) throws Exception {
+    public Klient otrzymacKlienta(String telefon) throws Exception {        ///
         String sql = "SELECT `id_klienta`, `imie`, `nazwisko`, `email`, `telefon`," +
                 "`data_urodzenia`, `plec`, `wzrost`, `waga`, `rozmiar_buta`, `numer_documentu` FROM Klienci WHERE `telefon` = ?";
         try (Connection conn = DataBaseConnection.getConnection();
@@ -99,6 +100,24 @@ public class KlienciRepository {
             throw new RuntimeException(e);
         }
         throw new Exception("Klient nie odnaleźony");
+    }
+
+    public void usunacKlienta(String telefon) throws Exception{
+        String sql = "DELETE FROM `klienci` WHERE telefon = ?";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, telefon);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("Klient nie odnaleźony");
+        }
+
+    }
+
+    public void edytowanieKlienta(String telefon) throws Exception{
+
     }
 
 
