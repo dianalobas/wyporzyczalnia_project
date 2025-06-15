@@ -6,18 +6,21 @@ import java.util.HashMap;
 import java.util.List;
 
 public class KlienciRepository {
-    public int dodac(String imie, String nazwisko, String email, String telefon, Date data_urodzenia, String plec, int wzrost,
+    public int dodac(String imie, String nazwisko, String email, String telefon, java.util.Date data_urodzenia, String plec, int wzrost,
                             int waga, float rozmiar_buta, String numer_documentu) throws Exception {
         String sql = "INSERT INTO `Klienci`(`imie`, `nazwisko`, `email`, `telefon`, " +
                 "`data_urodzenia`, `plec`, `wzrost`, `waga`, `rozmiar_buta`, `numer_documentu`)" +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        java.sql.Date dusql = data_urodzenia != null ? new java.sql.Date(data_urodzenia.getTime()) : null;
+
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setString(1, imie);
                 pstmt.setString(2, nazwisko);
                 pstmt.setString(3, email);
                 pstmt.setString(4, telefon);
-                pstmt.setDate(5, data_urodzenia);
+                pstmt.setDate(5, dusql);
                 pstmt.setString(6, plec);
                 pstmt.setInt(7, wzrost);
                 pstmt.setInt(8, waga);
@@ -38,7 +41,7 @@ public class KlienciRepository {
         }
     }
     public int dodac(Klient klient) throws Exception {
-        return dodac(klient.imie, klient.nazwisko, klient.email, klient.telefon, (java.sql.Date)klient.data_urodzenia, klient.plec, klient.wzrost, klient.waga, klient.rozmiar_buta, klient.numer_documentu);
+        return dodac(klient.imie, klient.nazwisko, klient.email, klient.telefon, klient.data_urodzenia, klient.plec, klient.wzrost, klient.waga, klient.rozmiar_buta, klient.numer_documentu);
     }
 
     public ArrayList<Klient> otrzymacWszyskrich() throws Exception {
@@ -50,13 +53,15 @@ public class KlienciRepository {
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()){
+                Date dusql = rs.getDate("data_urodzenia");
+                java.util.Date du = dusql != null ? new java.util.Date(dusql.getTime()) : null;
                 Klient klient = new Klient(
                 rs.getInt("id_klienta"),
                 rs.getString("imie"),
                 rs.getString("nazwisko"),
                 rs.getString("email"),
                 rs.getString("telefon"),
-                (java.util.Date)rs.getDate("data_urodzenia"),
+                du,
                 rs.getString("plec"),
                 rs.getInt("wzrost"),
                 rs.getInt("waga"),
@@ -80,13 +85,15 @@ public class KlienciRepository {
             pstmt.setString(1, telefon);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
+                Date dusql = rs.getDate("data_urodzenia");
+                java.util.Date du = dusql != null ? new java.util.Date(dusql.getTime()) : null;
                 Klient klient = new Klient(
                         rs.getInt("id_klienta"),
                         rs.getString("imie"),
                         rs.getString("nazwisko"),
                         rs.getString("email"),
                         rs.getString("telefon"),
-                        (java.util.Date) rs.getDate("data_urodzenia"),
+                        du,
                         rs.getString("plec"),
                         rs.getInt("wzrost"),
                         rs.getInt("waga"),

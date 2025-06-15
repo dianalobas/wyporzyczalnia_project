@@ -7,6 +7,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.beans.PropertyChangeListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class NewClient extends JFrame{
     private JPanel JPanel1;
@@ -22,12 +28,13 @@ public class NewClient extends JFrame{
     private JComboBox sexInp;
     private JButton menuBackBtn;
     private JButton saveBtn;
+    private JTextField dataInp;
 
     public NewClient(){
         super("Nowy klient");
         this.setContentPane(this.JPanel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        int width = 500, height = 300;
+        int width = 700, height = 400;
         this.setSize(width,height);
 
         menuBackBtn.setPreferredSize(new Dimension(180, 20));
@@ -61,12 +68,24 @@ public class NewClient extends JFrame{
                     klient.email = emailInp.getText();
                     klient.telefon = telefonInp.getText();
                     klient.numer_documentu = passportInp.getText();
+                    String dateString = dataInp.getText();
+                    if (dateString.length() > 0) {
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+                        try {
+                            klient.data_urodzenia = formatter.parse(dateString);
+                        } catch (ParseException ex) {
+                            dataInp.setForeground(Color.RED);
+                            return;
+                        }
+                    } else {
+                        klient.data_urodzenia = null;//new Date(Long.MIN_VALUE);
+                    }
 
                     KlienciRepository klienciRepository = new KlienciRepository();
                     try {
                         klienciRepository.dodac(klient);
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null,"123"); //////
+                        JOptionPane.showMessageDialog(null,ex.getMessage()); //////
 
                     }
 
@@ -79,6 +98,7 @@ public class NewClient extends JFrame{
                     weightInp.setText("");
                     bootSizeInp.setSelectedIndex(0);
                     adresInp.setText("");
+                    dataInp.setText("");
                     sexInp.setSelectedIndex(0);
                 } else {
                     JOptionPane.showMessageDialog(null,"Uzupełnij wszystkie pola z gwiazdkami!","Błąd",
@@ -86,6 +106,13 @@ public class NewClient extends JFrame{
 
                 }
 
+            }
+        });
+        dataInp.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                dataInp.setForeground(Color.BLACK);
             }
         });
     }

@@ -38,6 +38,9 @@ CREATE TABLE Wypozyczenie (
     FOREIGN KEY (id_klienta) REFERENCES Klienci(id_klienta),
     FOREIGN KEY (id_sprzetu) REFERENCES Sprzet(id_sprzetu)
 );
+///tablica wypozyczenie sprzetu:
+///typ: 0 - wyporzyczenie
+///     1 - zwrot
 
 INSERT INTO `sprzettype`(`nazwa`) VALUES
 ('Narty'), ('Snowboard'), ('Kijki'), ('Kask');

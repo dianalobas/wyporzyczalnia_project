@@ -7,9 +7,8 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame{
     private JPanel JPanel1;
-    private JButton returnBtn;
     private JButton rentItemBtn;
-    private JButton storeManageBtn;
+    private JButton itemsViewBtn;
     private JButton outProgramBtn;
     private JButton CRUDklienci;
 
@@ -17,23 +16,14 @@ public class Menu extends JFrame{
         super("Menu");
         this.setContentPane(this.JPanel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        int width = 500, height = 300;
+        int width = 700, height = 400;
         this.setSize(width,height);
 
-        returnBtn.setPreferredSize(new Dimension(180, 20));
-        rentItemBtn.setPreferredSize(new Dimension(180, 20));
-        storeManageBtn.setPreferredSize(new Dimension(180, 20));
-        outProgramBtn.setPreferredSize(new Dimension(180, 20));
-        CRUDklienci.setPreferredSize(new Dimension(180, 20));
+        rentItemBtn.setPreferredSize(new Dimension(200, 20));
+        itemsViewBtn.setPreferredSize(new Dimension(200, 20));
+        outProgramBtn.setPreferredSize(new Dimension(200, 20));
+        CRUDklienci.setPreferredSize(new Dimension(200, 20));
 
-        returnBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                NewClient newClient = new NewClient();
-                newClient.setVisible(true);
-            }
-        });
         outProgramBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -54,6 +44,14 @@ public class Menu extends JFrame{
                 dispose();
                 ListaWszystkichKlientow listaWszystkichKlientow = new ListaWszystkichKlientow();
                 listaWszystkichKlientow.setVisible(true);
+            }
+        });
+        itemsViewBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                WszystkieWypozyczenia wszystkieWypozyczenia = new WszystkieWypozyczenia();
+                wszystkieWypozyczenia.setVisible(true);
             }
         });
     }

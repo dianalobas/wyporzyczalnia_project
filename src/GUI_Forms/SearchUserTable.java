@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SearchUserTable extends JFrame{
@@ -26,7 +27,7 @@ public class SearchUserTable extends JFrame{
         super("Wypożyczenie 1");
         this.setContentPane(this.JPanel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        int width = 500, height = 300;
+        int width = 700, height = 400;
         this.setSize(width,height);
 
         /// Class Objects
@@ -84,8 +85,13 @@ public class SearchUserTable extends JFrame{
                         ///
                         Klient klient = klienciRepository.otrzymacKlienta(numerTelefonu);
                         klientRef.set(klient);
+                        String formattedDataUrodzenia = "";
+                        if (klient.data_urodzenia != null) {
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+                            formattedDataUrodzenia = formatter.format(klient.data_urodzenia);
+                        }
 
-                        String[][] rowData = {{klient.imie, klient.nazwisko, klient.telefon, klient.numer_documentu}};
+                        String[][] rowData = {{klient.imie, klient.nazwisko, klient.telefon, klient.numer_documentu, formattedDataUrodzenia}};
                         tableModel = new DefaultTableModel(rowData, columnNames);
                         userTable.setModel(tableModel);
                         userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
