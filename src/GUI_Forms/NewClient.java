@@ -29,8 +29,9 @@ public class NewClient extends JFrame{
     private JButton menuBackBtn;
     private JButton saveBtn;
     private JTextField dataInp;
+    private Klient newKlient;
 
-    public NewClient(){
+    public NewClient(Klient klient){
         super("Nowy klient");
         this.setContentPane(this.JPanel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,7 +48,27 @@ public class NewClient extends JFrame{
         weightInp.setPreferredSize(new Dimension(40, 20));
         bootSizeInp.setPreferredSize(new Dimension(40, 20));
 
+        newKlient = klient;
+        if (klient != null){
+            nameInp.setText(klient.imie);
+            surnameInp.setText(klient.nazwisko);
+            emailInp.setText(klient.email);
+            telefonInp.setText(klient.telefon);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+            dataInp.setText(formatter.format(klient.data_urodzenia));
+            weightInp.setText(String.valueOf(klient.waga));
+            heightInp.setText(String.valueOf(klient.wzrost));
+            String rozmiarButa = String.valueOf(klient.rozmiar_buta);
+            bootSizeInp.setSelectedItem(rozmiarButa);
 
+            if (bootSizeInp.getSelectedIndex() == 0){
+                bootSizeInp.addItem(rozmiarButa);
+                bootSizeInp.setSelectedItem(rozmiarButa);
+            }
+            passportInp.setText(klient.numer_documentu);
+            String plec = String.valueOf(klient.plec);
+            sexInp.setSelectedItem(plec);
+        }
 
         menuBackBtn.addActionListener(new ActionListener() {
             @Override
@@ -68,6 +89,13 @@ public class NewClient extends JFrame{
                     klient.email = emailInp.getText();
                     klient.telefon = telefonInp.getText();
                     klient.numer_documentu = passportInp.getText();
+                    klient.waga = Integer.parseInt(weightInp.getText());
+                    klient.wzrost = Integer.parseInt(heightInp.getText());
+                    klient.rozmiar_buta = Float.parseFloat((String)bootSizeInp.getSelectedItem());
+                    klient.plec = ((String)sexInp.getSelectedItem());
+                    if (sexInp.getSelectedIndex() == 0){
+                        klient.plec = null;
+                    }
                     String dateString = dataInp.getText();
                     if (dateString.length() > 0) {
                         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
@@ -83,7 +111,12 @@ public class NewClient extends JFrame{
 
                     KlienciRepository klienciRepository = new KlienciRepository();
                     try {
-                        klienciRepository.dodac(klient);
+                        if (newKlient == null){
+                            klienciRepository.dodac(klient);
+                        } else {
+                            klient.id = newKlient.id;
+                            klienciRepository.edit(klient);
+                        }
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null,ex.getMessage()); //////
 

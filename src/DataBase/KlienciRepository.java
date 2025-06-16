@@ -118,15 +118,39 @@ public class KlienciRepository {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new Exception("Klient nie odnaleźony");
+            throw new Exception("Klient nie odnaleźony\n"+e.getMessage());
         }
 
     }
 
-    public void edytowanieKlienta(String telefon) throws Exception{
+    public void edit(Klient klient) throws Exception {
+        String sql = "UPDATE `klienci` " +
+                "SET `imie`=?,`nazwisko`=?,`email`=?," +
+                "`telefon`=?, `data_urodzenia`=?,`plec`=?,`wzrost`=?," +
+                "`waga`=?,`rozmiar_buta`=?,`numer_documentu`=? WHERE `id_klienta`=?";
 
+        java.sql.Date dusql = klient.data_urodzenia != null ? new java.sql.Date(klient.data_urodzenia.getTime()) : null;
+
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, klient.imie);
+            pstmt.setString(2, klient.nazwisko);
+            pstmt.setString(3, klient.email);
+            pstmt.setString(4, klient.telefon);
+            pstmt.setDate(5, dusql);
+            pstmt.setString(6, klient.plec);
+            pstmt.setInt(7, klient.wzrost);
+            pstmt.setInt(8, klient.waga);
+            pstmt.setFloat(9, klient.rozmiar_buta);
+            pstmt.setString(10, klient.numer_documentu);
+            pstmt.setInt(11, klient.id);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
     }
-
 
 
 }

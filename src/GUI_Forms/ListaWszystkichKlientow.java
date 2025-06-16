@@ -2,6 +2,7 @@ package GUI_Forms;
 
 import Class.*;
 import DataBase.KlienciRepository;
+import DataBase.SprzetRepository;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -23,10 +24,8 @@ public class ListaWszystkichKlientow extends JFrame{
     private JButton delBtn;
 
     private DefaultTableModel tableModel;
-    private JPopupMenu popupMenu;
-    private JMenuItem menuItemAdd;
-    private JMenuItem menuItemRemove;
-    private JMenuItem menuItemRemoveAll;
+    private KlienciRepository klienciRepository = new KlienciRepository();
+    private Klient selectedKlient;
 
     public ListaWszystkichKlientow(){
         super("Wypożyczenie 1");
@@ -61,25 +60,6 @@ public class ListaWszystkichKlientow extends JFrame{
         ///
         AtomicReference<Klient> klientRef = new AtomicReference<>(null);
 
-        editBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!userTable.getSelectionModel().isSelectionEmpty()){
-                    dispose();
-                    telefonInp.setText("");
-
-                    ///
-                    Klient klient = klientRef.get();
-                    RentItem rentItem = null;//////////!
-                    try {
-                        rentItem = new RentItem(klient);
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    rentItem.setVisible(true);
-                }
-            }
-        });
 
         searchBtn.addActionListener(new ActionListener() {
             @Override
@@ -88,15 +68,14 @@ public class ListaWszystkichKlientow extends JFrame{
                 if (!numerTelefonu.trim().isEmpty()) {
                     try {
                         ///
-                        Klient klient = klienciRepository.otrzymacKlienta(numerTelefonu);
-                        klientRef.set(klient);
+                        selectedKlient = klienciRepository.otrzymacKlienta(numerTelefonu);
                         String formattedDataUrodzenia = "";
-                        if (klient.data_urodzenia != null) {
+                        if (selectedKlient.data_urodzenia != null) {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-                            formattedDataUrodzenia = formatter.format(klient.data_urodzenia);
+                            formattedDataUrodzenia = formatter.format(selectedKlient.data_urodzenia);
                         }
 
-                        String[][] rowData = {{klient.imie, klient.nazwisko, klient.telefon, klient.numer_documentu, formattedDataUrodzenia}};
+                        String[][] rowData = {{selectedKlient.imie, selectedKlient.nazwisko, selectedKlient.telefon, selectedKlient.numer_documentu, formattedDataUrodzenia}};
                         tableModel = new DefaultTableModel(rowData, columnNames);
                         userTable.setModel(tableModel);
                         userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -116,10 +95,12 @@ public class ListaWszystkichKlientow extends JFrame{
                         telefonInp.setText("");
                         tableModel = new DefaultTableModel(emptyData, columnNames);
                         userTable.setModel(tableModel);
+                        selectedKlient = null;
                     }
                 } else {
                     messageLabel.setForeground(Color.RED);
                     messageLabel.setText("Wpisz numer telefonu");
+                    selectedKlient = null;
                 }
             }
         });
@@ -129,7 +110,7 @@ public class ListaWszystkichKlientow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                NewClient newClient = new NewClient();
+                NewClient newClient = new NewClient(null);
                 newClient.setVisible(true);
             }
         });
@@ -147,7 +128,7 @@ public class ListaWszystkichKlientow extends JFrame{
                             messageLabel.setText("Klient o numerze telefonu: " + numerTelefonu + " został usunięty");
                             telefonInp.setText("");
                         } catch (Exception ex) {
-                            messageLabel.setText("Nie ma klienta z takiem numerem telefonu");
+                            messageLabel.setText("Błąd: " + ex.getMessage());
                         }
                     }
                 }
@@ -157,18 +138,18 @@ public class ListaWszystkichKlientow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String numerTelefonu = telefonInp.getText();
-                if (!numerTelefonu.trim().isEmpty()){
+                if (!numerTelefonu.trim().isEmpty() && selectedKlient != null){
                     if (!userTable.getSelectionModel().isSelectionEmpty()){
-                        try {
-                            klienciRepository.edytowanieKlienta(numerTelefonu);
-                            messageLabel.setForeground(Color.BLACK);
-                            messageLabel.setText("Klient o numerze telefonu: " + numerTelefonu + " został zedytowany");
-                        } catch (Exception ex) {
-                            messageLabel.setText("Nie ma klienta z takiem numerem telefonu");
-                        }
+                        dispose();
+                        telefonInp.setText("");
+
+                        NewClient newClient = new NewClient(selectedKlient);
+                        newClient.setVisible(true);
                     }
                 }
             }
         });
+
     }
+
 }

@@ -196,7 +196,10 @@
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                  <enabled value="false"/>
+                </properties>
               </component>
               <component id="434c9" class="javax.swing.JComboBox" binding="sexInp">
                 <constraints>
@@ -204,8 +207,7 @@
                 </constraints>
                 <properties>
                   <model>
-                    <item value=""/>
-                    <item value="Dziecko"/>
+                    <item value="Wybierz"/>
                     <item value="Kobieta"/>
                     <item value="Mężczyzna"/>
                   </model>
@@ -268,18 +270,26 @@
                 <properties>
                   <editable value="false"/>
                   <model>
-                    <item value=""/>
-                    <item value="22.0"/>
-                    <item value="22.5"/>
-                    <item value="23.0"/>
-                    <item value="23.5"/>
-                    <item value="24.0"/>
-                    <item value="24.5"/>
-                    <item value="25.0"/>
-                    <item value="25.5"/>
-                    <item value="26.0"/>
-                    <item value="26.5"/>
-                    <item value="27.0"/>
+                    <item value="Wybierz"/>
+                    <item value="21.0"/>
+                    <item value="21.5"/>
+                    <item value="22.0 "/>
+                    <item value="22.5  "/>
+                    <item value="23.0  "/>
+                    <item value="23.5  "/>
+                    <item value="24.0  "/>
+                    <item value="24.5  "/>
+                    <item value="25.0  "/>
+                    <item value="25.5  "/>
+                    <item value="26.0  "/>
+                    <item value="26.5  "/>
+                    <item value="27.0  "/>
+                    <item value="27.5  "/>
+                    <item value="28.0  "/>
+                    <item value="28.5  "/>
+                    <item value="29.0  "/>
+                    <item value="29.5  "/>
+                    <item value="30.0"/>
                   </model>
                   <toolTipText value=""/>
                 </properties>

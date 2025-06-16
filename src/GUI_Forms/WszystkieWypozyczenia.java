@@ -28,7 +28,7 @@ public class WszystkieWypozyczenia extends JFrame{
         super("Wszystkie Wypożyczenia");
         this.setContentPane(this.JPanel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        int width = 500, height = 300;
+        int width = 700, height = 400;
         this.setSize(width,height);
         String[] columnNames = {"Nazwa", "Firma", "Model", "Cena za dzień"};
         DefaultTableModel tableModel = new DefaultTableModel(null, columnNames);

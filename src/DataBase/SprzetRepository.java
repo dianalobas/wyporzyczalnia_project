@@ -76,6 +76,7 @@ public class SprzetRepository{
                 sprzet.model = rs.getString("model");
                 sprzet.firma = rs.getString("firma");
                 sprzet.rozmiar = rs.getFloat("rozmiar");
+                sprzet.cena_dzienna = rs.getFloat("cena_dzienna");
                 lista.add(sprzet);
             }
 
@@ -154,6 +155,7 @@ public class SprzetRepository{
                 sprzet.model = rs.getString("model");
                 sprzet.firma = rs.getString("firma");
                 sprzet.rozmiar = rs.getFloat("rozmiar");
+                sprzet.cena_dzienna = rs.getFloat("cena_dzienna");
                 lista.add(sprzet);
             }
 
@@ -214,6 +216,7 @@ public class SprzetRepository{
                 sprzet.model = rs.getString("model");
                 sprzet.firma = rs.getString("firma");
                 sprzet.rozmiar = rs.getFloat("rozmiar");
+                sprzet.cena_dzienna = rs.getFloat("cena_dzienna");
                 lista.add(sprzet);
             }
 

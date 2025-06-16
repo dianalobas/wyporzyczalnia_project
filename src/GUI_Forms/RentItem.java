@@ -43,7 +43,7 @@ public class RentItem extends JFrame{
         surnameLabel.setText("Nazwisko: " + klient.nazwisko);
         heightLabel.setText("Wzrost: " + klient.wzrost);
         wieghtLabel.setText("Waga: " + klient.waga);
-        bootSizeLabel.setText("Rozmiar buta: " + klient.rozmiar_buta);
+            bootSizeLabel.setText("Rozmiar buta: " + klient.rozmiar_buta);
         passpotLabel.setText("Nr dokumentu: " + klient.numer_documentu);
         telefonIDLabel.setText("Dane urzytkownika: #" + klient.telefon);
 
@@ -91,13 +91,7 @@ public class RentItem extends JFrame{
                     sprzet.cena_dzienna
                 });
 
-                // sum update
-                float currentTotal = 0;
-                for (Sprzet s : listaWyporzeczenia) {
-                    currentTotal += s.cena_dzienna;
-                }
-                totalPriceLabel.setText("Cena: " + currentTotal + " zł");
-
+                updateTotalCena();
                 typeBox.setSelectedIndex(0);
             }
         });
@@ -105,18 +99,26 @@ public class RentItem extends JFrame{
         backBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int result = JOptionPane.showConfirmDialog(
-                        null,
-                        "Wybrane sprzęty nie będą przypisane do urzytkownika.\nCzy na pewno chcesz wyjść?",
-                        "Potwierdzenie",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE
-                );
-                if (result == JOptionPane.OK_OPTION) {
+                if (userTable.getRowCount() != 0){
+                    int result = JOptionPane.showConfirmDialog(
+                            null,
+                            "Wybrane sprzęty nie będą przypisane do urzytkownika.\nCzy na pewno chcesz wyjść?",
+                            "Potwierdzenie",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+                    if (result == JOptionPane.OK_OPTION) {
+                        dispose();
+                        SearchUserTable searchUserTable = new SearchUserTable();
+                        searchUserTable.setVisible(true);
+                    }
+                } else {
                     dispose();
                     SearchUserTable searchUserTable = new SearchUserTable();
                     searchUserTable.setVisible(true);
                 }
+
+
             }
         });
         typeBox.addActionListener(new ActionListener() {
@@ -159,6 +161,7 @@ public class RentItem extends JFrame{
                 model.removeRow(rowIdex);
                 messageLabel.setForeground(Color.GREEN);
                 messageLabel.setText("Pole zostało uzunięte!");
+                updateTotalCena();
             }
         });
         saveBtn.addActionListener(new ActionListener() {
@@ -181,24 +184,18 @@ public class RentItem extends JFrame{
                         );
                     }
                 }
-/*
-                for (Sprzet elem: listaWyporzeczenia){
-                    try {
-                        sprzetRepository.dodacSprzetDoWypozyczenia(klient, elem);
-                        listaWyporzeczenia.remove(listaWyporzeczenia.size() -1);
-                    } catch (Exception ex) {
-                        JOptionPane.showConfirmDialog(
-                                null,
-                                (elem.nazwa + " nie został zapisany do wypożyczenia!\n"+ex.getMessage()),
-                                "Uwaga",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.WARNING_MESSAGE
-                        );
-                    }
-                }
-                */
+                updateTotalCena();
+
             }
         });
+    }
+    private void updateTotalCena(){
+        // sum update
+        float currentTotal = 0;
+        for (Sprzet s : listaWyporzeczenia) {
+            currentTotal += s.cena_dzienna;
+        }
+        totalPriceLabel.setText("Cena: " + currentTotal + " zł");
     }
 
 }
