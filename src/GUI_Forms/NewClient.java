@@ -55,7 +55,7 @@ public class NewClient extends JFrame{
             emailInp.setText(klient.email);
             telefonInp.setText(klient.telefon);
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-            dataInp.setText(formatter.format(klient.data_urodzenia));
+            dataInp.setText(klient.data_urodzenia != null ? formatter.format(klient.data_urodzenia) : null);
             weightInp.setText(String.valueOf(klient.waga));
             heightInp.setText(String.valueOf(klient.wzrost));
             String rozmiarButa = String.valueOf(klient.rozmiar_buta);
@@ -103,6 +103,7 @@ public class NewClient extends JFrame{
                             klient.data_urodzenia = formatter.parse(dateString);
                         } catch (ParseException ex) {
                             dataInp.setForeground(Color.RED);
+                            JOptionPane.showMessageDialog(null,"Data musi mieć taki format: dd.MM.yyyy");
                             return;
                         }
                     } else {

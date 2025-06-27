@@ -11,7 +11,7 @@ public abstract class Sprzet {
     public float rozmiar;
     public Date data_zakupu;
     public float cena_zakupu;
-    public float cena_dzienna = cena_zakupu/60;
+    public float cena_dzienna;
 
     public Sprzet() {
     }

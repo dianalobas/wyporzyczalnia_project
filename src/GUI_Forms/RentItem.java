@@ -162,6 +162,7 @@ public class RentItem extends JFrame{
                 messageLabel.setForeground(Color.GREEN);
                 messageLabel.setText("Pole zostało uzunięte!");
                 updateTotalCena();
+                typeBox.setSelectedIndex(0);
             }
         });
         saveBtn.addActionListener(new ActionListener() {

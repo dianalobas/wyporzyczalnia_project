@@ -30,7 +30,7 @@
                 </constraints>
                 <properties>
                   <font name="Inter" size="32" style="1"/>
-                  <text value="Wypożyczenie"/>
+                  <text value="Odnaleźć klienta"/>
                 </properties>
               </component>
             </children>

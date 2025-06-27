@@ -7,7 +7,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class RentItemsList extends JFrame{
     private JPanel JPanel1;
@@ -16,22 +19,23 @@ public class RentItemsList extends JFrame{
     private JTable userTable;
     private JLabel telefonIDLabel;
     private JLabel messageLabel;
-    private JLabel totalPriceLabel;
+    private JLabel priceLabel;
     private SprzetRepository sprzetRepository = new SprzetRepository();
-    private ArrayList<Sprzet> listaWyporzeczenia = new ArrayList<>();
+    private ArrayList<WypoSprzet> listaWyporzeczenia = new ArrayList<>();
+
+
 
 
     RentItemsList(Klient klient){ /// ArrayList<WypoSprzet> wszystkieSprzety
-        super("Sprzety do wydożyczania");
+        super("Wypożyczone sprzęty");
         this.setContentPane(this.JPanel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int width = 700, height = 400;
         this.setSize(width,height);
 
-
         telefonIDLabel.setText("Dane urzytkownika: #" + klient.telefon);
 
-        String[] columnNames = {"Nazwa", "Firma", "Model", "Cena za dzień"};
+        String[] columnNames = {"Nazwa", "Firma", "Data wypożyczenia", "Cena za dzień", "Ilość dni", "Ogólna cena"};
 
 
 
@@ -46,14 +50,20 @@ public class RentItemsList extends JFrame{
 
         /// wypisanie wypoyczonego sprzetu
         try {
-            ArrayList<Sprzet> sprzetKlienta = sprzetRepository.otrzymacWyporzyczonySprzetKlienta(klient.id);
+            ArrayList<WypoSprzet> sprzetKlienta = sprzetRepository.otrzymacWyporzyczonySprzetKlienta(klient.id);
             /*listaWyporzeczenia.clear();
             tableModel.setRowCount(0);*/
-            for (Sprzet item: sprzetKlienta){
+            for (WypoSprzet item: sprzetKlienta){
                 listaWyporzeczenia.add(item);
-                String[] rowData = {item.nazwa, item.firma, item.model, String.valueOf(item.cena_dzienna)};
+                long ilosc_dni = getDays(item.data_wypozyczenia);
+                SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+                String formattedDataWypo = formatter.format(item.data_wypozyczenia);
+
+                float totalSprzetPrice = item.sprzet.cena_dzienna * ilosc_dni;
+                String[] rowData = {item.sprzet.nazwa, item.sprzet.firma, formattedDataWypo, String.valueOf(item.sprzet.cena_dzienna), String.valueOf(ilosc_dni), String.valueOf(totalSprzetPrice)};
                 tableModel.addRow(rowData);
             }
+            updateTotalPrice();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -63,8 +73,8 @@ public class RentItemsList extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Menu menu = new Menu();
-                menu.setVisible(true);
+                SearchUserTable searchUserTable = new SearchUserTable();
+                searchUserTable.setVisible(true);
             }
         });
         backItemBtn.addActionListener(new ActionListener() {
@@ -77,12 +87,13 @@ public class RentItemsList extends JFrame{
                 }
                 int rowIdex = userTable.getSelectedRow();
                 try {
-                    sprzetRepository.wynajemZwrotSprzetu(klient, listaWyporzeczenia.get(rowIdex), true);
+                    sprzetRepository.wynajemZwrotSprzetu(klient, listaWyporzeczenia.get(rowIdex).sprzet, true);
                     listaWyporzeczenia.remove(rowIdex);
                     DefaultTableModel model = (DefaultTableModel) userTable.getModel();
                     model.removeRow(rowIdex);
                     messageLabel.setForeground(Color.GREEN);
                     messageLabel.setText("Pole zostało uzunięte!");
+                    updateTotalPrice();
                 } catch (Exception ex) {
                     JOptionPane.showConfirmDialog(
                             null,
@@ -96,5 +107,19 @@ public class RentItemsList extends JFrame{
             }
         });
     }
+    private long getDays(Date data)
+    {
+        long diffInMillies = new Date().getTime() - data.getTime();
+        return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS) + 1;
+    }
 
+    private void updateTotalPrice(){
+        float totalPrice = 0;
+        for (WypoSprzet sprzet: listaWyporzeczenia){
+            long ilosc_dni = getDays(sprzet.data_wypozyczenia);
+            float totalSprzetPrice = sprzet.sprzet.cena_dzienna * ilosc_dni;
+            totalPrice += totalSprzetPrice;
+            priceLabel.setText("Total price: " + totalPrice + "zł");
+        }
+    }
 }

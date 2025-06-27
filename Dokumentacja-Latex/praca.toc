@@ -1,0 +1,17 @@
+\babel@toc {polish}{}\relax 
+\contentsline {chapter}{\numberline {1}Praca projektowa z Programowania Obiektowego JAVA}{6}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Streszczenie w j˛ezyku polskim i angielskim}{6}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Opis założeń projektu}{6}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Opis struktury projektu}{8}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Struktura bazy danych}{8}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Hierarchia klas}{9}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}Wymagania}{10}{subsection.1.3.3}%
+\contentsline {section}{\numberline {1.4}Harmonogram realizacji projektu}{11}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Prezentacja warstwy użytkowej projektu}{11}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Podsumowanie}{17}{section.1.6}%
+\contentsline {section}{\numberline {1.7}Oświadczenie studenta o samodzielności pracy}{17}{section.1.7}%
+\contentsline {section}{\textbf {Bibliografia}}{18}{section.1.7}%
+\contentsline {section}{\textbf {Spis rysunków}}{19}{chapter*.20}%
+\contentsline {section}{\textbf {Spis tabel}}{20}{chapter*.20}%
+\contentsline {section}{\textbf {Spis listingów}}{21}{chapter*.20}%
+\contentsline {section}{\textbf {Oświadczenie studenta o samodzielności pracy}}{22}{chapter*.22}%

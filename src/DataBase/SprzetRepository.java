@@ -3,6 +3,7 @@ import Class.*;
 
 import javax.swing.*;
 import java.sql.*;
+import java.sql.Date;
 import java.util.*;
 
 public class SprzetRepository{
@@ -104,8 +105,8 @@ public class SprzetRepository{
             throw new Exception(e);
         }
     }
-    public ArrayList<Sprzet> otrzymacWyporzyczonySprzetKlienta(int id_klienta) throws Exception {
-        ArrayList<Sprzet> lista = new ArrayList<>();
+    public ArrayList<WypoSprzet> otrzymacWyporzyczonySprzetKlienta(int id_klienta) throws Exception {
+        ArrayList<WypoSprzet> lista = new ArrayList<>();
         String sql = "SELECT sp.*, st.nazwa AS typ_sprzetu, wp.* " +
                 "FROM sprzet AS sp " +
                 "LEFT JOIN ( " +
@@ -156,7 +157,12 @@ public class SprzetRepository{
                 sprzet.firma = rs.getString("firma");
                 sprzet.rozmiar = rs.getFloat("rozmiar");
                 sprzet.cena_dzienna = rs.getFloat("cena_dzienna");
-                lista.add(sprzet);
+                WypoSprzet wypoSprzet = new WypoSprzet();
+                wypoSprzet.sprzet = sprzet;
+                Date dataWypoSql = rs.getDate("data_operacji");
+                java.util.Date dw = dataWypoSql != null ? new java.util.Date(dataWypoSql.getTime()) : null;
+                wypoSprzet.data_wypozyczenia = dw;
+                lista.add(wypoSprzet);
             }
 
         } catch (SQLException e) {

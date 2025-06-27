@@ -28,7 +28,7 @@ public class ListaWszystkichKlientow extends JFrame{
     private Klient selectedKlient;
 
     public ListaWszystkichKlientow(){
-        super("Wypożyczenie 1");
+        super("Odnaleźć klienta");
         this.setContentPane(this.JPanel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int width = 700, height = 400;
@@ -112,6 +112,7 @@ public class ListaWszystkichKlientow extends JFrame{
                 dispose();
                 NewClient newClient = new NewClient(null);
                 newClient.setVisible(true);
+
             }
         });
         delBtn.addActionListener(new ActionListener() {
@@ -130,6 +131,9 @@ public class ListaWszystkichKlientow extends JFrame{
                         } catch (Exception ex) {
                             messageLabel.setText("Błąd: " + ex.getMessage());
                         }
+                    } else {
+                        messageLabel.setForeground(Color.RED);
+                        messageLabel.setText("Wybierz pole!");
                     }
                 }
             }
@@ -146,6 +150,9 @@ public class ListaWszystkichKlientow extends JFrame{
                         NewClient newClient = new NewClient(selectedKlient);
                         newClient.setVisible(true);
                     }
+                } else {
+                    messageLabel.setForeground(Color.RED);
+                    messageLabel.setText("Wybierz pole!");
                 }
             }
         });
